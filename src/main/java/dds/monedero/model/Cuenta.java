@@ -22,38 +22,37 @@ public class Cuenta {
     saldo = montoInicial;
   }
 
-  public void poner(Double cuanto) {
-    if (cuanto <= 0) {
-      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
+  public void ponerDinero(Movimiento movimiento) {
+    if (movimiento.getMonto() <= 0) {
+      throw new MontoNegativoException(movimiento.getMonto()  + ": el monto a ingresar debe ser un valor positivo");
     }
 
     if (getMovimientos().stream()
-        .filter(movimiento -> movimiento.fueDepositado(LocalDate.now()))
+        .filter(mov -> mov.fueDepositado(LocalDate.now()))
         .count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
 
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    this.agregarMontoACuenta(movimiento);
   }
 
-  public void sacar(Double cuanto) {
-    if (cuanto <= 0) {
-      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
+  public void sacarDinero(Movimiento movimiento) {
+    if (movimiento.getMonto() <= 0) {
+      throw new MontoNegativoException(movimiento.getMonto() + ": el monto a ingresar debe ser un valor positivo");
     }
-    if (getSaldo() - cuanto < 0) {
+    if (getSaldo() - movimiento.getMonto() < 0) {
       throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
     }
     var montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
     var limite = 1000 - montoExtraidoHoy;
-    if (cuanto > limite) {
+    if (movimiento.getMonto() > limite) {
       throw new MaximoExtraccionDiarioException(
           "No puede extraer mas de $ " + 1000 + " diarios, " + "límite: " + limite);
     }
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+    this.restarMontoExtraido(movimiento);
   }
 
-  public void agregarMovimiento(LocalDate fecha, Double cuanto, Boolean esDeposito) {
-    var movimiento = new Movimiento(fecha, cuanto, esDeposito);
+  public void agregarMovimiento(Movimiento movimiento) {
     movimientos.add(movimiento);
   }
 
@@ -78,6 +77,19 @@ public class Cuenta {
 
   public void setSaldo(Double saldo) {
     this.saldo = saldo;
+  }
+
+  //---------------------------------------------------------------------------------------
+  public void agregarMontoACuenta(Movimiento movimiento) {
+    Double nuevoSaldo = this.getSaldo() + movimiento.getMonto();
+    this.setSaldo(nuevoSaldo);
+    this.agregarMovimiento(movimiento);
+  }
+
+  public void restarMontoExtraido(Movimiento movimiento) {
+    Double nuevoSaldo = this.getSaldo() - movimiento.getMonto();
+    this.setSaldo(nuevoSaldo);
+    this.agregarMovimiento(movimiento);
   }
 
 }
