@@ -24,7 +24,7 @@ public class Cuenta {
     }
 
     if (getMovimientos().stream()
-        .filter(mov -> mov.fueDepositado(LocalDate.now()))
+        .filter(mov -> mov.getTipo() == TipoMovimiento.DEPOSITO &&  movimiento.getFecha().equals(LocalDate.now()))
         .count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
