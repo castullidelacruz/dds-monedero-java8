@@ -72,6 +72,7 @@ public class Cuenta {
   }
 
   //---------------------------------------------------------------------------------------
+
   public void agregarMontoACuenta(Movimiento movimiento) {
     Double nuevoSaldo = this.getSaldo() + movimiento.getMonto();
     this.setSaldo(nuevoSaldo);
