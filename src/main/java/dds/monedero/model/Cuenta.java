@@ -18,11 +18,11 @@ public class Cuenta {
     saldo = 0.0;
   }
 
-  public Cuenta(double montoInicial) {
+  public Cuenta(Double montoInicial) {
     saldo = montoInicial;
   }
 
-  public void poner(double cuanto) {
+  public void poner(Double cuanto) {
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
@@ -36,7 +36,7 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
   }
 
-  public void sacar(double cuanto) {
+  public void sacar(Double cuanto) {
     if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
@@ -52,12 +52,12 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
+  public void agregarMovimiento(LocalDate fecha, Double cuanto, Boolean esDeposito) {
     var movimiento = new Movimiento(fecha, cuanto, esDeposito);
     movimientos.add(movimiento);
   }
 
-  public double getMontoExtraidoA(LocalDate fecha) {
+  public Double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
@@ -72,11 +72,11 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public double getSaldo() {
+  public Double getSaldo() {
     return saldo;
   }
 
-  public void setSaldo(double saldo) {
+  public void setSaldo(Double saldo) {
     this.saldo = saldo;
   }
 
