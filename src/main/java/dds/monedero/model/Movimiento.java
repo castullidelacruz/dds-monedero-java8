@@ -4,9 +4,6 @@ import java.time.LocalDate;
 
 public class Movimiento {
   private LocalDate fecha;
-  // Nota: En ningún lenguaje de programación usen jamás doubles (es decir, números con punto flotante) para modelar dinero en el mundo real.
-  // En su lugar siempre usen numeros de precision arbitraria o punto fijo, como BigDecimal en Java y similares
-  // De todas formas, NO es necesario modificar ésto como parte de este ejercicio. 
   private Double monto;
   private TipoMovimiento tipo;
 
@@ -24,10 +21,6 @@ public class Movimiento {
     return fecha;
   }
 
-
-  public Boolean esDeLaFecha(LocalDate fecha) {
-    return this.fecha.equals(fecha);
-  }
 
   public TipoMovimiento getTipo() {
     return tipo;

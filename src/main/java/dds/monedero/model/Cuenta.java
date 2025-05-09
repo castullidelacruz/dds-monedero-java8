@@ -1,9 +1,6 @@
 package dds.monedero.model;
 
-import dds.monedero.exceptions.MaximaCantidadDepositosException;
-import dds.monedero.exceptions.MaximoExtraccionDiarioException;
-import dds.monedero.exceptions.MontoNegativoException;
-import dds.monedero.exceptions.SaldoMenorException;
+import dds.monedero.exceptions.ExecpcionesDeCuenta;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,13 +17,13 @@ public class Cuenta {
 
   public void ponerDinero(Movimiento movimiento) {
     if (movimiento.getMonto() <= 0) {
-      throw new MontoNegativoException(movimiento.getMonto()  + ": el monto a ingresar debe ser un valor positivo");
+      throw new ExecpcionesDeCuenta(TipoErrorCuenta.MONTO_NEGATIVO, movimiento.getMonto());
     }
 
     if (getMovimientos().stream()
         .filter(mov -> mov.getTipo() == TipoMovimiento.DEPOSITO &&  movimiento.getFecha().equals(LocalDate.now()))
         .count() >= 3) {
-      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
+      throw new ExecpcionesDeCuenta(TipoErrorCuenta.MAX_DEPOSITOS, movimiento.getMonto());
     }
 
     this.agregarMontoACuenta(movimiento);
@@ -34,16 +31,15 @@ public class Cuenta {
 
   public void sacarDinero(Movimiento movimiento) {
     if (movimiento.getMonto() <= 0) {
-      throw new MontoNegativoException(movimiento.getMonto() + ": el monto a ingresar debe ser un valor positivo");
+      throw new ExecpcionesDeCuenta(TipoErrorCuenta.MONTO_NEGATIVO, movimiento.getMonto());
     }
     if (getSaldo() - movimiento.getMonto() < 0) {
-      throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
+      throw new ExecpcionesDeCuenta(TipoErrorCuenta.SALDO_INSUFICIENTE, this.getSaldo());
     }
     var montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
     var limite = 1000 - montoExtraidoHoy;
     if (movimiento.getMonto() > limite) {
-      throw new MaximoExtraccionDiarioException(
-          "No puede extraer mas de $ " + 1000 + " diarios, " + "límite: " + limite);
+      throw new ExecpcionesDeCuenta(TipoErrorCuenta.MAX_EXTRACCION_DIARIA, movimiento.getMonto());
     }
     this.restarMontoExtraido(movimiento);
   }
