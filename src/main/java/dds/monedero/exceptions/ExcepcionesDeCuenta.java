@@ -2,8 +2,8 @@ package dds.monedero.exceptions;
 
 import dds.monedero.model.TipoErrorCuenta;
 
-public class ExecpcionesDeCuenta extends RuntimeException {
-  public ExecpcionesDeCuenta(TipoErrorCuenta tipoError, Double valor) {
+public class ExcepcionesDeCuenta extends RuntimeException {
+  public ExcepcionesDeCuenta(TipoErrorCuenta tipoError, Double valor) {
     super(generarMensaje(tipoError, valor));
   }
 
