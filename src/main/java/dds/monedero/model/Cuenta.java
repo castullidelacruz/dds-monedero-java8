@@ -14,10 +14,6 @@ public class Cuenta {
   private Double saldo = 0.0;
   private List<Movimiento> movimientos = new ArrayList<>();
 
-  public Cuenta() {
-    saldo = 0.0;
-  }
-
   public Cuenta(Double montoInicial) {
     saldo = montoInicial;
   }
@@ -58,17 +54,13 @@ public class Cuenta {
 
   public Double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
-        .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
+        .filter(movimiento -> (movimiento.getTipo().equals(TipoMovimiento.DEPOSITO)) && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
         .sum();
   }
 
   public List<Movimiento> getMovimientos() {
     return movimientos;
-  }
-
-  public void setMovimientos(List<Movimiento> movimientos) {
-    this.movimientos = movimientos;
   }
 
   public Double getSaldo() {
